@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import * as cybersourceRestApi from 'cybersource-rest-client';
+import 'dotenv/config';
 
 @Injectable()
 export class PayerAuthEnrollmentService {

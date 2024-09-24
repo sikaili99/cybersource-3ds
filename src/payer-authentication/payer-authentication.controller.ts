@@ -2,6 +2,10 @@ import { Controller, Post, Body, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { PayerAuthEnrollmentService } from './payer-authentication.service';
 import { DeviceInfo } from '../middleware/device-info.middleware';
+import {
+  EnrollmentRequestDto,
+  EnrollmentResponseDto,
+} from './payer-authentication.dto';
 
 interface RequestWithSession extends Request {
   deviceInfo?: DeviceInfo;
@@ -11,8 +15,11 @@ interface RequestWithSession extends Request {
 export class PayerAuthEnrollmentController {
   constructor(private readonly enrollmentService: PayerAuthEnrollmentService) {}
 
-  @Post('enroll')
-  async enroll(@Body() body: any, @Req() req: RequestWithSession) {
+  @Post('authenticate')
+  async enroll(
+    @Body() body: EnrollmentRequestDto,
+    @Req() req: RequestWithSession,
+  ): Promise<EnrollmentResponseDto> {
     const deviceInformation = {
       ipAddress: req.deviceInfo?.ipAddress,
       httpAcceptContent: req.deviceInfo.httpAcceptContent,

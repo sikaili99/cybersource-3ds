@@ -22,52 +22,143 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# 3D Secure Authentication App
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This application provides a NestJS-based API for initiating 3D Secure authentication for online payments. It includes a payer authentication enrollment service and a controller to handle authentication requests.
 
-## Installation
+## Features
 
-```bash
-$ npm install
+- Payer Authentication Enrollment
+- 3D Secure Authentication Flow
+- Device Information Collection
+- Integration with CyberSource REST API
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or later)
+- Yarn package manager
+- CyberSource account and API credentials
+
+### Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/sikaili99/cybersource-3ds.git cybersource-3ds-app
+   ```
+
+2. Install dependencies:
+   ```
+   cd cybersource-3ds-app
+   yarn install
+   ```
+
+3. Set up environment variables:
+   Create a `.env` file in the root directory and add the following:
+   ```
+   CYBERSOURCE_API_HOST=your_cybersource_api_host
+   CYBERSOURCE_MERCHANT_ID=your_merchant_id
+   CYBERSOURCE_API_KEY_ID=your_api_key_id
+   CYBERSOURCE_SECRET_KEY=your_secret_key
+   ```
+
+### Running the App
+
+To start the application in development mode:
+
+```
+yarn run start:dev
 ```
 
-## Running the app
+The API will be available at `http://localhost:3000` by default.
 
-```bash
-# development
-$ npm run start
+## API Usage
 
-# watch mode
-$ npm run start:dev
+### Enrollment Request
 
-# production mode
-$ npm run start:prod
+**Endpoint:** POST `/payments/authenticate`
+
+**Payload Example:**
+
+```json
+{
+  "orderInformation": {
+    "amountDetails": {
+      "currency": "USD",
+      "totalAmount": "10.99"
+    },
+    "billTo": {
+      "address1": "1 Market St",
+      "address2": "Address 2",
+      "administrativeArea": "CA",
+      "country": "US",
+      "locality": "san francisco",
+      "firstName": "John",
+      "lastName": "Doe",
+      "phoneNumber": "4158880000",
+      "email": "test@cybs.com",
+      "postalCode": "94105"
+    }
+  },
+  "paymentInformation": {
+    "card": {
+      "type": "001",
+      "expirationMonth": "12",
+      "expirationYear": "2025",
+      "number": "4000000000002503"
+    }
+  }
+}
 ```
 
-## Test
+### Enrollment Response
 
-```bash
-# unit tests
-$ npm run test
+**Response Example:**
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```json
+{
+    "id": "7271651195656439704953",
+    "submitTimeUtc": "2024-09-24T08:05:19Z",
+    "status": "PENDING_AUTHENTICATION",
+    "clientReferenceInformation": {
+        "code": "1727165119636",
+        "partner": {
+            "developerId": "N2RC3Q4K"
+        }
+    },
+    "consumerAuthenticationInformation": {
+        "acsTransactionId": "ac7b8126-5866-4901-b24e-7de373123bc1",
+        "acsUrl": "https://0merchantacsstag.cardinalcommerce.com/MerchantACSWeb/creq.jsp",
+        "authenticationTransactionId": "zwGPO1zc3LjZKRLg0wh0",
+        "challengeRequired": "N",
+        "pareq": "eyJtZXNzYWdlVHlwZSI6IkNSZXEiLCJtZXNzY....",
+        "specificationVersion": "2.2.0",
+        "stepUpUrl": "https://centinelapistag.cardinalcommerce.com/V2/Cruise/StepUp",
+        "threeDSServerTransactionId": "923da988-4127-46f5-adb6-9a1e3d53050c",
+        "veresEnrolled": "Y",
+        "directoryServerTransactionId": "c0ce63fa-acc0-4c8f-806c-f582b4fa5c89",
+        "acsOperatorID": "MerchantACS",
+        "acsReferenceNumber": "Cardinal ACS"
+    },
+    "errorInformation": {
+        "reason": "CONSUMER_AUTHENTICATION_REQUIRED",
+        "message": "The cardholder is enrolled in Payer Authentication. Please authenticate the cardholder before continuing with the transaction."
+    }
+}
 ```
 
-## Support
+## 3D Secure Authentication Flow
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. Send a POST request to `/payments/authenticate` with the payment details.
+2. Receive the enrollment response, which includes the `acsUrl` and `pareq`.
+3. Redirect the user to the 3D Secure authentication page using the provided HTML form.
+4. Handle the post-authentication response at your specified `termUrl`.
 
-## Stay in touch
+## Contributing
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.

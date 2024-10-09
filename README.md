@@ -151,9 +151,54 @@ The API will be available at `http://localhost:3000` by default.
 ## 3D Secure Authentication Flow
 
 1. Send a POST request to `/payments/authenticate` with the payment details.
-2. Receive the enrollment response, which includes the `acsUrl` and `pareq`.
+2. Receive the enrollment response, which includes the `acsUrl` and `creq`.
 3. Redirect the user to the 3D Secure authentication page using the provided HTML form.
 4. Handle the post-authentication response at your specified `termUrl`.
+
+## HTML Form Example
+
+```js
+<html>
+<head>
+  <style>
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 2s linear infinite;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader" style="display: none"></div>
+  <form id="acsform" action="https://0merchantacsstag.cardinalcommerce.com/MerchantACSWeb/creq.jsp" method="POST">
+    <input type="hidden" name="creq" value="eyJtZXNzYWdlVHlwZSI6IkNSZXEiLCJtZXNzYWdlVmVyc2lvbiI6IjIuMi4wIiwidGhyZWVEU1NlcnZlclRyYW5zSUQiOiJhZTE4ZTBhNi1mNTg0LTQ4OWItYTcwNy1iZWM0YTViNDIwYjQiLCJhY3NUcmFuc0lEIjoiZWYyYTRkMjItMGM3MS00MTkwLWFmYjMtNTM1YjY4NDUzYjU1IiwiY2hhbGxlbmdlV2luZG93U2l6ZSI6IjAyIn0"> 
+    <input type="hidden" name="TermURL" value="https://test.api/callback">
+    <input type="hidden" name="MD" value="Fck1BOCrtAmadwZqhhjqUg0zpA1SZ5pMz8KCMLO53crxpdTYxh">
+  </form>
+  <script>
+    function showLoaderAndSubmitForm() {
+      document.getElementById("loader").style.display = "block";
+      setTimeout(function () {
+        document.getElementById("acsform").submit();
+      }, 1000);
+    }
+    window.onload = showLoaderAndSubmitForm;
+  </script>
+</body>
+</html>
+```
 
 ## Contributing
 

@@ -1503,12 +1503,12 @@ axios-cookiejar-support@4.0.7:
   dependencies:
     http-cookie-agent "^5.0.4"
 
-axios@1.6.4:
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.4.tgz#184ee1f63d412caffcf30d2c50982253c3ee86e0"
-  integrity sha512-heJnIs6N4aa1eSthhN9M5ioILu8Wi8vmQW9iHQ9NUvfkJb0lEEDUiIdQNAuBtfUt3FxReaKdpQA5DbmMOqzF/A==
+axios@1.7.4:
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.4.tgz#4c8ded1b43683c8dd362973c393f3ede24052aa2"
+  integrity sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==
   dependencies:
-    follow-redirects "^1.15.4"
+    follow-redirects "^1.15.6"
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
@@ -2097,13 +2097,13 @@ crypto@^1.0.1:
   resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
   integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
 
-cybersource-rest-client@^0.0.60:
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/cybersource-rest-client/-/cybersource-rest-client-0.0.60.tgz#4269d702e0d25709ce9f3471a4fa51a5c0ed0f05"
-  integrity sha512-XtTCYy/8PPd9oOZdnhnbYxKFOFJKCTL17zVK//cWLY/Fl39OxFgYD6s2TTAKn6I8i92aPBxbMMZl817FAZ2Vwg==
+cybersource-rest-client@^0.0.61:
+  version "0.0.61"
+  resolved "https://registry.yarnpkg.com/cybersource-rest-client/-/cybersource-rest-client-0.0.61.tgz#bbfbb173982bbd9dec3e03bb78bb67823e8a127f"
+  integrity sha512-OJrKyWpH++4zzNLmIyaNd7SkiqqH5iP32pQZOI7pNFyvmu0M9VRvOZW7bJArcGWSJo+eR3ikJb8crN0gpQYlkg==
   dependencies:
     app-root-path "^3.1.0"
-    axios "1.6.4"
+    axios "1.7.4"
     axios-cookiejar-support "4.0.7"
     chai "^4.3.1"
     chai-as-promised "^7.1.1"
@@ -2710,7 +2710,7 @@ fn.name@1.x.x:
   resolved "https://registry.yarnpkg.com/fn.name/-/fn.name-1.1.0.tgz#26cad8017967aea8731bc42961d04a3d5988accc"
   integrity sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==
 
-follow-redirects@^1.15.4, follow-redirects@^1.15.6:
+follow-redirects@^1.15.6:
   version "1.15.9"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.9.tgz#a604fa10e443bf98ca94228d9eebcc2e8a2c8ee1"
   integrity sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==
@@ -3713,7 +3713,7 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-jwk-to-pem@^2.0.5:
+jwk-to-pem@^2.0.5, jwk-to-pem@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/jwk-to-pem/-/jwk-to-pem-2.0.6.tgz#0810c03307e873d5c81faeb650408fa3ae91eb9c"
   integrity sha512-zPC/5vjyR08TpknpTGW6Z3V3lDf9dU92oHbf0jJlG8tGOzslF9xk2UiO/seSx2llCUrNAe+AvmuGTICSXiYU7A==
@@ -5348,9 +5348,9 @@ winston-transport@^4.4.0, winston-transport@^4.7.0:
     triple-beam "^1.3.0"
 
 winston@^3.11.0:
-  version "3.14.2"
-  resolved "https://registry.yarnpkg.com/winston/-/winston-3.14.2.tgz#94ce5fd26d374f563c969d12f0cd9c641065adab"
-  integrity sha512-CO8cdpBB2yqzEf8v895L+GNKYJiEq8eKlHU38af3snQBQ+sdAIUepjMSguOIJC7ICbzm0ZI+Af2If4vIJrtmOg==
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-3.15.0.tgz#4df7b70be091bc1a38a4f45b969fa79589b73ff5"
+  integrity sha512-RhruH2Cj0bV0WgNL+lOfoUBI4DVfdUNjVnJGVovWZmrcKtrFTTRzgXYK2O9cymSGjrERCtaAeHwMNnUWXlwZow==
   dependencies:
     "@colors/colors" "^1.6.0"
     "@dabh/diagnostics" "^2.0.2"

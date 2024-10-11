@@ -28,8 +28,9 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "crypto": "^1.0.1",
-    "cybersource-rest-client": "^0.0.60",
+    "cybersource-rest-client": "^0.0.61",
     "dotenv": "^16.4.5",
+    "jwk-to-pem": "^2.0.6",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },

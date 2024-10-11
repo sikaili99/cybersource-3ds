@@ -106,7 +106,7 @@ The API will be available at `http://localhost:3000` by default.
       "type": "001",
       "expirationMonth": "12",
       "expirationYear": "2025",
-      "number": "4000000000002503"
+      "number": "4456530000001096"
     }
   }
 }
@@ -118,26 +118,27 @@ The API will be available at `http://localhost:3000` by default.
 
 ```json
 {
-    "id": "7271651195656439704953",
-    "submitTimeUtc": "2024-09-24T08:05:19Z",
+    "id": "7286354492906348904953",
+    "submitTimeUtc": "2024-10-11T08:30:49Z",
     "status": "PENDING_AUTHENTICATION",
     "clientReferenceInformation": {
-        "code": "1727165119636",
+        "code": "aJcYbRCM03wXGwTnxqyWa5qm9WcqraCttRNeKWWOKUI422Lz0b",
         "partner": {
             "developerId": "N2RC3Q4K"
         }
     },
     "consumerAuthenticationInformation": {
-        "acsTransactionId": "ac7b8126-5866-4901-b24e-7de373123bc1",
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "acsTransactionId": "203781e0-5308-4b72-9ed8-612616beb9c6",
         "acsUrl": "https://0merchantacsstag.cardinalcommerce.com/MerchantACSWeb/creq.jsp",
-        "authenticationTransactionId": "zwGPO1zc3LjZKRLg0wh0",
+        "authenticationTransactionId": "BWWb4CNopyeseF4K7Gk0",
         "challengeRequired": "N",
-        "pareq": "eyJtZXNzYWdlVHlwZSI6IkNSZXEiLCJtZXNzY....",
+        "pareq": "eyJtZXNzYWdlVHlwZSI6IkNSZXEiLCJtZXNzYWdlVmVyc2lvbi...",
         "specificationVersion": "2.2.0",
         "stepUpUrl": "https://centinelapistag.cardinalcommerce.com/V2/Cruise/StepUp",
-        "threeDSServerTransactionId": "923da988-4127-46f5-adb6-9a1e3d53050c",
+        "threeDSServerTransactionId": "86627146-f0e6-4b26-bb61-87eac3900d77",
         "veresEnrolled": "Y",
-        "directoryServerTransactionId": "c0ce63fa-acc0-4c8f-806c-f582b4fa5c89",
+        "directoryServerTransactionId": "cfdb4f5d-311a-463e-af46-46ac80161097",
         "acsOperatorID": "MerchantACS",
         "acsReferenceNumber": "Cardinal ACS"
     },
@@ -150,54 +151,211 @@ The API will be available at `http://localhost:3000` by default.
 
 ## 3D Secure Authentication Flow
 
-1. Send a POST request to `/payments/authenticate` with the payment details.
-2. Receive the enrollment response, which includes the `acsUrl` and `creq`.
-3. Redirect the user to the 3D Secure authentication page using the provided HTML form.
-4. Handle the post-authentication response at your specified `termUrl`.
+Use an iframe to post accessToken and MD (merchant data) to the setUpUrl
 
-## HTML Form Example
+iframe example
 
 ```js
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <style>
-    .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #3498db;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 2s linear infinite;
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step-Up Authentication</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #step-up-iframe {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
-  <div class="loader" id="loader" style="display: none"></div>
-  <form id="acsform" action="https://0merchantacsstag.cardinalcommerce.com/MerchantACSWeb/creq.jsp" method="POST">
-    <input type="hidden" name="creq" value="eyJtZXNzYWdlVHlwZSI6IkNSZXEiLCJtZXNzYWdlVmVyc2lvbiI6IjIuMi4wIiwidGhyZWVEU1NlcnZlclRyYW5zSUQiOiJhZTE4ZTBhNi1mNTg0LTQ4OWItYTcwNy1iZWM0YTViNDIwYjQiLCJhY3NUcmFuc0lEIjoiZWYyYTRkMjItMGM3MS00MTkwLWFmYjMtNTM1YjY4NDUzYjU1IiwiY2hhbGxlbmdlV2luZG93U2l6ZSI6IjAyIn0"> 
-    <input type="hidden" name="TermURL" value="https://test.api/callback">
-    <input type="hidden" name="MD" value="Fck1BOCrtAmadwZqhhjqUg0zpA1SZ5pMz8KCMLO53crxpdTYxh">
-  </form>
-  <script>
-    function showLoaderAndSubmitForm() {
-      document.getElementById("loader").style.display = "block";
-      setTimeout(function () {
-        document.getElementById("acsform").submit();
-      }, 1000);
-    }
-    window.onload = showLoaderAndSubmitForm;
-  </script>
+    <!-- Step-Up Iframe -->
+    <iframe name="step-up-iframe" id="step-up-iframe" height="400" width="400">
+        <p>Your browser does not support iframes.</p>
+    </iframe>
+
+    <!-- Form for Step-Up Authentication -->
+    <form id="step-up-form" target="step-up-iframe" method="POST" action="https://centinelapistag.cardinalcommerce.com/V2/Cruise/StepUp">
+        <input type="hidden" name="JWT" value="eyJhbGc....">
+        <input type="hidden" name="MD" value="aJcYbRCM03wXGwTnxqyWa5qm9WcqraCttRNeKWWOKUI422Lz0b">
+    </form>
+
+    <script>
+        window.onload = function() {
+            var stepUpForm = document.getElementById('step-up-form');
+            var iframe = document.getElementById('step-up-iframe');
+
+            if (stepUpForm && iframe) {
+                // Automatically submit the form
+                stepUpForm.submit();
+            }
+        }
+    </script>
 </body>
 </html>
+```
+
+Once user authenticates 3DS, Cybersource will send the following data to the returnUrl `consumerAuthenticationInformation.returnUrl`
+
+### Cybersource returnUrl payload
+
+```json
+{
+  TransactionId: 'BWWb4CNopyeseF4K7Gk0',
+  MD: 'aJcYbRCM03wXGwTnxqyWa5qm9WcqraCttRNeKWWOKUI422Lz0b'
+}
+```
+
+This can be used to validate if the user authoursed a payament via 3DS 
+
+## Validate transaction on Cybersource
+
+```js
+
+/* eslint-disable prettier/prettier */
+import { Injectable } from '@nestjs/common';
+import axios from 'axios';
+import * as crypto from 'crypto';
+import { ValidateAuthenticationDto } from './dto/validate-authentication.dto';
+import 'dotenv/config';
+
+@Injectable()
+export class CybersourceAuthService {
+  private readonly apiHost: string;
+  private readonly merchantId: string;
+  private readonly apiKeyId: string;
+  private readonly secretKey: string;
+
+  constructor() {
+    this.apiHost = process.env.CYBERSOURCE_API_HOST || 'apitest.cybersource.com';
+    this.merchantId = process.env.CYBERSOURCE_MERCHANT_ID;
+    this.apiKeyId = process.env.CYBERSOURCE_API_KEY_ID;
+    this.secretKey = process.env.CYBERSOURCE_SECRET_KEY;
+  }
+
+  async validateAuthentication(dto: ValidateAuthenticationDto): Promise<any> {
+    const { TransactionId, MD } = dto;
+    console.log({ TransactionId, MD });
+    
+    const endpoint = '/risk/v1/authentication-results';
+    const url = `https://${this.apiHost}${endpoint}`;
+    const payload = {
+      clientReferenceInformation: {
+        code: MD
+      },
+      consumerAuthenticationInformation: {
+        authenticationTransactionId: TransactionId
+      }
+    };
+
+    const gmtDateTime = new Date().toUTCString();
+    const digestHash = this.getDigest(JSON.stringify(payload));
+    const signature = this.generateSignature('post', endpoint, digestHash, gmtDateTime);
+
+    try {
+      const response = await axios.post(url, payload, {
+        headers: {
+          'v-c-merchant-id': this.merchantId,
+          'Date': gmtDateTime,
+          'Host': this.apiHost,
+          'Digest': digestHash,
+          'Signature': signature,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.status === 'AUTHENTICATION_SUCCESSFUL') {
+        return { success: true, message: 'Authentication validated successfully', data: response.data };
+      } else {
+        return { success: false, message: 'Authentication validation failed', data: response.data };
+      }
+    } catch (error) {
+      console.error('Error during authentication validation:', error.response?.data || error);
+      return { success: false, message: 'An error occurred during validation', error: error.response?.data || error.message };
+    }
+  }
+
+  private getDigest(payload: string): string {
+    const hash = crypto.createHash('sha256');
+    hash.update(payload);
+    return `SHA-256=${hash.digest('base64')}`;
+  }
+
+  private generateSignature(httpMethod: string, requestUri: string, digestHash: string, gmtDateTime: string): string {
+    const signatureParams = [
+      `host: ${this.apiHost}`,
+      `date: ${gmtDateTime}`,
+      `(request-target): ${httpMethod.toLowerCase()} ${requestUri}`,
+      `digest: ${digestHash}`,
+      `v-c-merchant-id: ${this.merchantId}`
+    ].join('\n');
+
+    const decodedSecret = Buffer.from(this.secretKey, 'base64');
+    const hmac = crypto.createHmac('sha256', decodedSecret);
+    const signatureString = hmac.update(signatureParams).digest('base64');
+
+    return `keyid="${this.apiKeyId}", algorithm="HmacSHA256", headers="host date (request-target) digest v-c-merchant-id", signature="${signatureString}"`;
+  }
+}
+
+```
+
+Response is send back to the iframe
+
+## TODO:
+
+Handle the response send back to iframe
+
+#### Response example
+
+```json
+{
+  "success": true,
+  "message": "Authentication validated successfully",
+  "data": {
+    "clientReferenceInformation": {
+      "code": "aJcYbRCM03wXGwTnxqyWa5qm9WcqraCttRNeKWWOKUI422Lz0b"
+    },
+    "consumerAuthenticationInformation": {
+      "indicator": "vbv",
+      "eciRaw": "05",
+      "authenticationResult": "0",
+      "strongAuthentication": {
+        "OutageExemptionIndicator": "0"
+      },
+      "authenticationStatusMsg": "Success",
+      "eci": "05",
+      "token": "AxijLwSTiv5+BGwbU2dXAFRPfiqN4cgCF7DJpJl6MXNaCAAA8Az4",
+      "cavv": "AAIBBYNoEwAAACcKhAJkdQAAAAA=",
+      "paresStatus": "Y",
+      "xid": "AAIBBYNoEwAAACcKhAJkdQAAAAA=",
+      "directoryServerTransactionId": "cfdb4f5d-311a-463e-af46-46ac80161097",
+      "threeDSServerTransactionId": "86627146-f0e6-4b26-bb61-87eac3900d77",
+      "specificationVersion": "2.2.0",
+      "acsTransactionId": "203781e0-5308-4b72-9ed8-612616beb9c6"
+    },
+    "id": "7286355264636624004951",
+    "paymentInformation": {
+      "card": {
+        "bin": "445653",
+        "type": "VISA"
+      }
+    },
+    "status": "AUTHENTICATION_SUCCESSFUL",
+    "submitTimeUtc": "2024-10-11T08:32:06Z"
+  }
+}
 ```
 
 ## Contributing

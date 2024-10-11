@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step-Up Authentication</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #step-up-iframe {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Step-Up Iframe -->
+    <iframe name="step-up-iframe" id="step-up-iframe" height="400" width="400">
+        <p>Your browser does not support iframes.</p>
+    </iframe>
+
+    <!-- Form for Step-Up Authentication -->
+    <form id="step-up-form" target="step-up-iframe" method="POST" action="https://centinelapistag.cardinalcommerce.com/V2/Cruise/StepUp">
+        <input type="hidden" name="JWT" value="eyJhbGc....">
+        <input type="hidden" name="MD" value="aJcYbRCM03wXGwTnxqyWa5qm9WcqraCttRNeKWWOKUI422Lz0b">
+    </form>
+
+    <script>
+        window.onload = function() {
+            var stepUpForm = document.getElementById('step-up-form');
+            var iframe = document.getElementById('step-up-iframe');
+
+            if (stepUpForm && iframe) {
+                // Automatically submit the form
+                stepUpForm.submit();
+            }
+        }
+    </script>
+</body>
+</html>

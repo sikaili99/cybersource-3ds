@@ -5,7 +5,9 @@ import { DeviceInfo } from '../middleware/device-info.middleware';
 import {
   EnrollmentRequestDto,
   EnrollmentResponseDto,
-} from './payer-authentication.dto';
+} from './dto/payer-authentication.dto';
+import { ValidateAuthenticationDto } from './dto/validate-authentication.dto';
+import { CybersourceAuthService } from './cybersource-auth.service';
 
 interface RequestWithSession extends Request {
   deviceInfo?: DeviceInfo;
@@ -13,7 +15,10 @@ interface RequestWithSession extends Request {
 
 @Controller('payments')
 export class PayerAuthEnrollmentController {
-  constructor(private readonly enrollmentService: PayerAuthEnrollmentService) {}
+  constructor(
+    private readonly enrollmentService: PayerAuthEnrollmentService,
+    private readonly cybersourceAuthService: CybersourceAuthService,
+  ) {}
 
   @Post('authenticate')
   async enroll(
@@ -39,5 +44,11 @@ export class PayerAuthEnrollmentController {
     return this.enrollmentService.enrollWithPendingAuthentication(
       enrollmentRequest,
     );
+  }
+
+  @Post('/receipt')
+  async validateAuthentication(@Body() dto: ValidateAuthenticationDto) {
+    console.log(dto);
+    return this.cybersourceAuthService.validateAuthentication(dto);
   }
 }

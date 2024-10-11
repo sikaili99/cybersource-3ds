@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import * as cybersourceRestApi from 'cybersource-rest-client';
@@ -28,13 +29,27 @@ export class PayerAuthEnrollmentService {
     };
   }
 
+  private generateRandomString = (length: number): string => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomString = '';
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomString += characters.charAt(randomIndex);
+    }
+  
+    return randomString;
+  }
+
+  // Enrollment method
   async enrollWithPendingAuthentication(requestBody: any): Promise<any> {
     try {
       const requestObj = new cybersourceRestApi.CheckPayerAuthEnrollmentRequest();
+      const md = this.generateRandomString(50);
 
       // Map client reference information
       const clientReferenceInformation = new cybersourceRestApi.Riskv1authenticationsetupsClientReferenceInformation();
-      clientReferenceInformation.code = requestBody.clientReferenceInformation?.code;
+      clientReferenceInformation.code = this.generateRandomString(50);
       requestObj.clientReferenceInformation = clientReferenceInformation;
 
       // Map order information
@@ -70,17 +85,13 @@ export class PayerAuthEnrollmentService {
 
       requestObj.paymentInformation = paymentInformation;
 
-      // Map buyer information (optional)
-      if (requestBody.buyerInformation) {
-        const buyerInformation = new cybersourceRestApi.Riskv1authenticationsBuyerInformation();
-        buyerInformation.mobilePhone = requestBody.buyerInformation.mobilePhone;
-        requestObj.buyerInformation = buyerInformation;
-      }
-
       // Map consumer authentication information
       const consumerAuthenticationInformation = new cybersourceRestApi.Riskv1decisionsConsumerAuthenticationInformation();
       consumerAuthenticationInformation.transactionMode = 'eCommerce';
       consumerAuthenticationInformation.deviceChannel = 'BROWSER';
+      consumerAuthenticationInformation.md = md;
+      consumerAuthenticationInformation.returnUrl = process.env.RETURN_URL || 'http://localhost:5001/payments/receipt'; // Cybersource will send TransactionId and MD (merchant data) to this URL
+      consumerAuthenticationInformation.referenceId = this.generateRandomString(16);
       requestObj.consumerAuthenticationInformation = consumerAuthenticationInformation;
 
       // Map device information
@@ -101,11 +112,14 @@ export class PayerAuthEnrollmentService {
       const instance = new cybersourceRestApi.PayerAuthenticationApi(this.configObject, this.apiClient);
 
       return new Promise((resolve, reject) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         instance.checkPayerAuthEnrollment(requestObj, (error: any, data: any, response: any) => {
           if (error) {
             console.error('Error:', error);
-            reject(error);
+            reject({
+              status: error.status || 500,
+              message: error.message || 'An unexpected error occurred',
+              details: error.response ? error.response.text : null
+            });
           } else {
             console.log('Data:', data);
             resolve(data);
